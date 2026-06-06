@@ -31,7 +31,7 @@ The project utilizes local character portraits dynamically changing depending on
 
 ## Running Locally 🚀
 
-Simply open the [dazai-elevator.html](dazai-elevator.html) file directly in any modern web browser! No installation or server required.
+Simply open the [index.html](index.html) file directly in any modern web browser! No installation or server required.
 
 ```bash
 # Clone the repository
@@ -39,7 +39,7 @@ git clone https://github.com/Mr-Soumo-006/dazai_elevator.git
 
 # Open the project
 cd dazai_elevator
-start dazai-elevator.html
+start index.html
 ```
 
 ---
