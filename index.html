@@ -431,50 +431,48 @@ const photoMap = {
 
 const quotes = {
   idle: [
-    "A beautiful double suicide... in an elevator? No, too cramped. The aesthetics would be terrible.",
-    "I wonder if Kunikida is looking for me. I left a note saying I was ascending to a higher plane of existence. Technically true.",
-    "If I stay in here long enough, does that count as working? Fukuzawa-san would probably say no.",
-    "This elevator is surprisingly sturdy. A shame, really.",
+    "Ah, a steel box suspended in the air... what a theatrical place for a nap.",
+    "I wonder if Kunikida has noticed my absence yet. I left my bandage roll to represent me.",
+    "A double suicide with a beautiful lady... yes! But doing it in a cramped elevator? Terrible aesthetics.",
+    "This elevator is surprisingly robust. How tragic. It refuses to plunge.",
+    "If I stand here long enough, does it count as overtime? I shall ask the President.",
     "At least Chuuya isn't here. His lack of height would make this elevator look like a cathedral.",
-    "Ah, the elevator music... it lacks the melancholic passion of a good tragedy.",
-    "I should write a book: '101 Ways to Doze Off in an ADA Elevator'.",
+    "The elevator music... it lacks the melancholic beauty of a good tragedy.",
+    "I should write a manual: '101 Places to Doze Off While Pretending to Work'.",
     "I pressed G. G for Ground, G for Grief, or G for 'Genius detective hiding from paperwork'.",
-    "Sometimes, vertical movement is the only progress I make all day.",
     "Someone left mochi on the floor. I ate it. No regrets whatsoever.",
-    "If I press the close door button fast enough... nothing happens. I tried."
+    "If I press the 'Close Door' button repeatedly, does it make the paperwork disappear? Worth a try."
   ],
   up: [
-    "Going up? How optimistic. I give it three floors.",
-    "Rising... like my blood pressure near Kunikida.",
-    "Ascending. Much like my word count. Pointless.",
-    "Each floor brings me closer to Kunikida's angry yelling. Let's press the emergency stop.",
-    "We are defying gravity! Newton would be so disappointed in us."
+    "Going up! Ascending towards the heavens... or just Kunikida's desk.",
+    "Rising... like my blood pressure when Kunikida starts yelling.",
+    "Defying gravity is quite easy. Defying Kunikida's schedule, however, is an art form.",
+    "Each floor brings me closer to the burden of responsibility. Let's press stop.",
+    "Ascending! How optimistic. I give it three floors before it gets boring."
   ],
   down: [
     "Descending... Ah, the sweet pull of gravity. My only true friend.",
-    "Going down to the basement. I hope there are no reports down there.",
+    "Going down to the basement. I hope the archives are nice and dark.",
     "Down we go, returning to the earth. If only it were a bit faster...",
-    "Down, down, down. Much like my motivation to do anything today.",
-    "The floor numbers are counting down. Ten, nine... wait, we only have six floors."
+    "Down, down, down. Much like my motivation to write reports today.",
+    "Going down. Hopefully to a place where paperwork doesn't exist."
   ],
   door: [
-    "The doors open. I do not move. I am a monument to hesitation.",
-    "Please do not hold the door. Let it close. Let everything close.",
-    "Arrived. The destination is always a disappointment.",
-    "*bows dramatically despite being completely alone*",
-    "Floor reached. Composing a dramatic three-volume novel about the journey in my head.",
-    "DOORS OPENING. My soul: already open. To suffering.",
+    "The doors open! Alas, the world outside is still there.",
+    "A destination reached. What a letdown. I was quite comfortable in my metallic coffin.",
+    "I step out. Please, hold your applause for my grand entrance.",
+    "Ah, another floor. Composing a dramatic three-volume novel about this journey in my head.",
     "Doors opening... Quick, act like I wasn't just napping against the wall."
   ],
   panic: [
     "CHAOS! This is the peak of human achievement!",
     "Kunikida is going to write a 40-page essay on why I shouldn't do this!",
-    "Every light is on! It's like a Christmas tree, but with more impending doom!",
-    "We are visiting every single floor! I call this... efficiency!",
-    "Wheee! Look at the floor indicator go! This is the most fun I've had all week!"
+    "Every light is glowing! It's like a Christmas tree, but with more impending doom!",
+    "We are visiting every single floor! I call this... peak efficiency!",
+    "Wheee! Look at the indicators! This is the most fun I've had all week!"
   ],
   akechi: [
-    "...Akechi. Did you follow me into this elevator specifically.",
+    "...Akechi. Did you follow me into this elevator specifically to torture me?",
     "Two of us. One box. No exits. Splendid. Truly splendid.",
     "He's going to critique my report. In a 2×2 meter sealed space.",
     "We are now trapped together. I have accepted my fate entirely."
@@ -507,12 +505,9 @@ function setPhoto(key) {
   const hint = document.getElementById('photo-hint');
   const src  = photoMap[key] || photoMap.idle;
   
-  img.style.opacity = 0;
-  setTimeout(() => {
-    img.src = src;
-    hint.textContent = src;
-    img.style.opacity = 1;
-  }, 120);
+  img.style.opacity = 1;
+  img.src  = src;
+  hint.textContent = src;
 }
 
 function setQuote(text, mood) {
@@ -760,28 +755,33 @@ function triggerPanic() {
   document.querySelectorAll('.fbtn').forEach(b => { b.classList.add('active'); });
   let f = 1; let upward = true;
   
-  const panicCommentary = [
-    "Wheee! Floor indicator is going wild!",
-    "I can feel the G-force! Splendid!",
-    "Kunikida's blood pressure is rising!",
-    "We are visiting every level of suffering!",
-    "Are we going up? Are we going down? Who cares!",
-    "Emergency brake, where are you?",
-    "If the cable snaps, I won't have to do reports!"
-  ];
-
   const tour = setInterval(() => {
     curFloor = f;
     positionCar(curFloor, true);
     updateStatus();
     
-    const line = pick(panicCommentary);
-    speak(line);
-    setQuote("F" + curFloor + ": " + line, 'panic');
+    let line = "";
+    if (upward) {
+      if (curFloor === 2) line = "Look at all the lights!";
+      else if (curFloor === 3) line = "Kunikida's blood pressure is rising!";
+      else if (curFloor === 4) line = "Newton would be so proud!";
+      else if (curFloor === 5) line = "Wheee! This is peak efficiency!";
+      else if (curFloor === 6) line = "We reached the top! Hold on!";
+    } else {
+      if (curFloor === 5) line = "And down we plunge!";
+      else if (curFloor === 4) line = "Is the cable creaking? Exciting!";
+      else if (curFloor === 3) line = "Splendid G-forces!";
+      else if (curFloor === 2) line = "Almost at the bottom!";
+    }
+    
+    if (line) {
+      speak(line);
+      setQuote("F" + curFloor + ": " + line, 'panic');
+    }
     
     if (upward) { f++; if (f > FLOORS) { upward = false; f = FLOORS - 1; } }
     else        { f--; if (f < 1)      { upward = true;  f = 2; } }
-  }, 850);
+  }, 750);
 
   setTimeout(() => {
     clearInterval(tour);
@@ -844,18 +844,18 @@ function akechiEnters() {
   setBandages(1);
 
   setTimeout(() => {
-    speak("Akechi: 'Your report had 14 errors.'");
+    speak("They were artistic choices!");
     setQuote("Akechi: 'Your floor 3 report had 14 errors.' \nDazai: 'I know. They were artistic choices.'", 'panic');
     addLog("Argument commenced in enclosed space.", 'drama');
   }, 2500);
 
   setTimeout(() => {
-    speak("Dazai: 'Is firing me an option?'");
+    speak("Is firing me an option?!");
     setQuote("Akechi: 'Are you trying to get fired?' \nDazai: 'Is that an option? Please tell me it is!'", 'panic');
   }, 5000);
 
   setTimeout(() => {
-    speak("...");
+    speak("*sighs dramatically*");
     setQuote("The elevator has visited no floor. Both men stare at the door. The door is unmoved by this.", 'panic');
     addLog('Impasse: 8 minutes. Dazai wins by surviving the silence.', 'lol');
     setWill(+4);
