@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dazai's Elevator of Suffering</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d12;
+    --panel: #111118;
+    --panel2: #181820;
+    --border: #1e1e2e;
+    --border2: #252535;
+    --accent: #4a4aff;
+    --up: #00ff88;
+    --down: #ffd700;
+    --panic: #ff4444;
+    --drama: #aa66cc;
+    --text: #888899;
+    --text2: #444455;
+    --mono: 'Share Tech Mono', monospace;
+    --serif: 'Noto Serif JP', serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    font-family: var(--mono);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+  }
+
+  header {
+    width: 100%;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo { color: var(--accent); font-size: 12px; letter-spacing: 3px; }
+  .logo span { color: var(--text2); }
+  .hdr-stats { display: flex; gap: 20px; }
+  .hstat { font-size: 10px; color: var(--text2); letter-spacing: 1px; }
+  .hstat span { color: var(--drama); }
+
+  .app {
+    width: 100%;
+    max-width: 1060px;
+    display: grid;
+    grid-template-columns: 200px 1fr 260px;
+    gap: 0;
+    margin: 24px 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 680px;
+  }
+
+  /* ── SHAFT ── */
+  .shaft-col {
+    background: #090910;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 14px 10px;
+  }
+  .col-title {
+    font-size: 9px;
+    color: var(--text2);
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  #shaft {
+    position: relative;
+    background: #060608;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    height: 540px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .rail { position: absolute; top: 0; bottom: 0; width: 4px; background: #141420; border-radius: 2px; }
+  .rail-l { left: 18px; }
+  .rail-r { right: 18px; }
+  .floor-line { position: absolute; left: 0; right: 0; height: 1px; background: #10101a; }
+  .f-label { position: absolute; right: 6px; font-size: 9px; color: #252535; font-family: var(--mono); }
+  .call-dot { position: absolute; left: 8px; width: 7px; height: 7px; border-radius: 50%; background: #1a1a2a; transition: all .3s; }
+  .call-dot.lit { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+
+  #car {
+    position: absolute;
+    left: 26px; right: 26px;
+    height: 116px;
+    background: #0e0e1a;
+    border: 2px solid var(--accent);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    transition: top 1s cubic-bezier(.4,0,.2,1);
+    z-index: 10;
+    overflow: hidden;
+  }
+  #car.moving-up   { border-color: var(--up);    box-shadow: 0 0 14px rgba(0,255,136,.18); }
+  #car.moving-down { border-color: var(--down);   box-shadow: 0 0 14px rgba(255,215,0,.18); }
+  #car.door-open   { border-color: #88ddff;        box-shadow: 0 0 14px rgba(136,221,255,.18); }
+  #car.panicking   { border-color: var(--panic);   box-shadow: 0 0 16px rgba(255,68,68,.25); animation: shake .12s infinite; }
+  #car.drama       { border-color: var(--drama);   box-shadow: 0 0 14px rgba(170,102,204,.2); }
+  @keyframes shake { 0%,100%{transform:translateX(0)}50%{transform:translateX(4px)} }
+
+  /* Photo inside car */
+  #dazai-photo {
+    width: 80px;
+    height: 88px;
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 4px;
+    background: #0a0a14;
+    border: 1px solid var(--border2);
+    display: block;
+    flex-shrink: 0;
+  }
+  .car-floor {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-top: 4px;
+  }
+  #car.moving-up   .car-floor { color: var(--up); }
+  #car.moving-down .car-floor { color: var(--down); }
+  #car.door-open   .car-floor { color: #88ddff; }
+  #car.panicking   .car-floor { color: var(--panic); }
+  #car.drama       .car-floor { color: var(--drama); }
+
+  /* Door flaps */
+  .door-wrap { position: absolute; inset: 0; display: flex; pointer-events: none; overflow: hidden; border-radius: 4px; }
+  .door-l, .door-r {
+    position: absolute; top: 0; bottom: 0; width: 50%;
+    background: #0d0d1a; border: 1px solid #2244aa;
+    opacity: 0; transition: transform .5s ease, opacity .3s;
+  }
+  .door-l { left: 0; }
+  .door-r { right: 0; }
+  #car.door-open .door-l { opacity: 1; transform: translateX(-98%); }
+  #car.door-open .door-r { opacity: 1; transform: translateX(98%); }
+  #car.door-closing .door-l { opacity: 1; transform: translateX(0); }
+  #car.door-closing .door-r { opacity: 1; transform: translateX(0); }
+
+  /* Speech bubble */
+  #speech {
+    position: absolute;
+    top: -52px; left: 50%; transform: translateX(-50%);
+    background: #14142a;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 10px; color: #aaaaff;
+    white-space: nowrap;
+    opacity: 0; transition: opacity .3s;
+    font-family: var(--serif);
+    z-index: 30;
+    pointer-events: none;
+    max-width: 200px;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.4;
+  }
+  #speech.show { opacity: 1; }
+  #speech::after {
+    content: ''; position: absolute;
+    bottom: -6px; left: 50%; transform: translateX(-50%);
+    border: 6px solid transparent; border-top-color: var(--accent); border-bottom: 0;
+  }
+
+  /* ── MIDDLE ── */
+  .mid-col {
+    display: flex;
+    flex-direction: column;
+    background: #0c0c14;
+  }
+  .sec {
+    background: #090912;
+    border-bottom: 1px solid var(--border);
+    padding: 8px 14px;
+    font-size: 9px; color: var(--text2);
+    letter-spacing: 2px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sec::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); display: inline-block; }
+
+  #floor-btns { padding: 12px 14px; display: flex; flex-direction: column; gap: 7px; }
+  .frow { display: flex; align-items: center; gap: 8px; }
+  .flbl { font-size: 11px; color: var(--text2); min-width: 26px; }
+  .fbtn {
+    flex: 1; padding: 7px 10px;
+    background: #0a0a14; border: 1px solid var(--border2);
+    color: var(--text2); font-family: var(--mono); font-size: 10px; letter-spacing: 1px;
+    border-radius: 6px; cursor: pointer; transition: all .2s; text-align: left;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .fbtn:hover { border-color: var(--accent); color: #8888ff; }
+  .fbtn.active { border-color: var(--up); color: var(--up); background: rgba(0,255,136,.06); }
+  .fbtn .arrow { font-size: 10px; opacity: .4; }
+
+  /* Quote */
+  #quote-box {
+    margin: 0 14px 0;
+    padding: 13px;
+    background: #08080f;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: var(--serif);
+    font-size: 12px; color: #6666aa; line-height: 1.75;
+    min-height: 72px;
+    transition: color .4s, border-color .4s;
+  }
+  #quote-box.drama  { color: #aa66cc; border-color: #4a2a6a; }
+  #quote-box.panic  { color: #cc6666; border-color: #4a1a1a; }
+  #quote-box.happy  { color: #66aa88; border-color: #1a4a2a; }
+
+  /* Status */
+  #status-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px; padding: 12px 14px;
+  }
+  .scard {
+    background: #08080f; border: 1px solid var(--border);
+    border-radius: 7px; padding: 9px 11px;
+  }
+  .scard-lbl { font-size: 9px; color: var(--text2); letter-spacing: 1px; margin-bottom: 4px; }
+  .scard-val { font-size: 15px; color: var(--accent); font-family: var(--mono); }
+  .scard-val.up    { color: var(--up); }
+  .scard-val.down  { color: var(--down); }
+  .scard-val.panic { color: var(--panic); }
+  .scard-val.drama { color: var(--drama); }
+  .scard-val.idle  { color: #444466; }
+
+  /* Special btns */
+  #special { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
+  .spbtn {
+    padding: 9px 12px; background: #09090f;
+    border: 1px solid var(--border2); color: var(--text2);
+    font-family: var(--mono); font-size: 10px; letter-spacing: .5px;
+    border-radius: 7px; cursor: pointer; transition: all .2s;
+    text-align: left;
+  }
+  .spbtn:hover          { border-color: #776688; color: #aa88cc; }
+  .spbtn.s-drama:hover  { border-color: var(--drama); color: var(--drama); }
+  .spbtn.s-panic:hover  { border-color: var(--panic); color: #ff8888; }
+  .spbtn.s-escape:hover { border-color: #44aacc; color: #88ccff; }
+  .spbtn.s-akechi:hover { border-color: #cc8844; color: #ffbb77; }
+
+  /* ── RIGHT ── */
+  .right-col {
+    background: #08080e;
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+  }
+
+  /* Meters */
+  .meters { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+  .meter-lbl { font-size: 9px; color: var(--text2); letter-spacing: 1px; margin-bottom: 5px; }
+  .meter-track { height: 6px; background: #121220; border-radius: 3px; overflow: hidden; }
+  .meter-fill { height: 100%; border-radius: 3px; transition: width .6s ease; }
+  .meter-fill.will    { background: var(--up); }
+  .meter-fill.band    { background: var(--drama); }
+  .meter-val { font-size: 9px; color: #333344; margin-top: 3px; }
+
+  /* Log */
+  #log {
+    flex: 1; overflow-y: auto; padding: 8px 12px;
+    scrollbar-width: thin; scrollbar-color: #1e1e2e transparent;
+  }
+  .log-e { font-size: 10px; line-height: 2; color: #2a2a3a; display: flex; gap: 6px; }
+  .log-e .lt { color: #1e1e30; min-width: 42px; flex-shrink: 0; }
+  .log-e.info   .lm { color: #3a3aaa; }
+  .log-e.move   .lm { color: #2a8855; }
+  .log-e.drama  .lm { color: #6a3a88; }
+  .log-e.panic  .lm { color: #883333; }
+  .log-e.lol    .lm { color: #887722; }
+
+  /* Death counter */
+  .dctr {
+    padding: 10px 14px; border-top: 1px solid var(--border);
+    font-size: 9px; color: var(--text2); letter-spacing: 1px;
+    display: flex; justify-content: space-between;
+  }
+  .dctr span { color: var(--drama); }
+
+  /* Photo name hint (shown on load until photo loads) */
+  .photo-hint {
+    position: absolute; bottom: 2px; left: 0; right: 0;
+    font-size: 8px; color: #333344; text-align: center; font-family: var(--mono);
+    letter-spacing: .5px; pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">DAZAI<span>://</span>ELEVATOR <span style="color:#333;margin-left:8px;font-size:10px;">Armed Detective Agency — B4 Shaft</span></div>
+  <div class="hdr-stats">
+    <div class="hstat">Deaths today: <span id="hdr-deaths">0</span></div>
+    <div class="hstat">Bandages: <span id="hdr-band">3</span>/10 rolls</div>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- SHAFT -->
+  <div class="shaft-col">
+    <div class="col-title">SHAFT B-4</div>
+    <div id="shaft">
+      <div class="rail rail-l"></div>
+      <div class="rail rail-r"></div>
+      <div id="car">
+        <div class="door-wrap">
+          <div class="door-l"></div>
+          <div class="door-r"></div>
+        </div>
+        <div id="speech">...</div>
+        <img id="dazai-photo" src="dazai-idle.png" alt="Dazai" onerror="this.style.background='#0d0d1f'"/>
+        <div class="car-floor" id="car-floor">F1 · IDLE</div>
+        <div class="photo-hint" id="photo-hint">dazai-idle.png</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MIDDLE -->
+  <div class="mid-col">
+    <div class="sec">FLOOR CALL PANEL</div>
+    <div id="floor-btns"></div>
+
+    <div class="sec" style="margin-top:10px;">DAZAI'S INNER MONOLOGUE</div>
+    <div id="quote-box">"Osamu Dazai has entered elevator B-4. He is already composing a haiku about the descent."</div>
+
+    <div id="status-grid">
+      <div class="scard"><div class="scard-lbl">CURRENT FLOOR</div><div class="scard-val" id="sv-floor">1</div></div>
+      <div class="scard"><div class="scard-lbl">STATE</div><div class="scard-val idle" id="sv-state">IDLE</div></div>
+      <div class="scard"><div class="scard-lbl">DIRECTION</div><div class="scard-val idle" id="sv-dir">—</div></div>
+      <div class="scard"><div class="scard-lbl">NEXT STOP</div><div class="scard-val" id="sv-next">—</div></div>
+    </div>
+
+    <div class="sec">SPECIAL INTERACTIONS</div>
+    <div id="special">
+      <button class="spbtn s-drama"  onclick="triggerDrama()">  ✦  Dazai writes haiku about the elevator</button>
+      <button class="spbtn s-panic"  onclick="triggerPanic()">  !!  Press every button simultaneously</button>
+      <button class="spbtn s-escape" onclick="tryEscape()">    ↑  Attempt escape via ceiling hatch</button>
+      <button class="spbtn s-akechi" onclick="akechiEnters()">  ⚠  Akechi enters the elevator</button>
+      <button class="spbtn" onclick="resetAll()" style="margin-top:4px;opacity:.5;">↺  Reset system</button>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-col">
+    <div class="sec">VITALS</div>
+    <div class="meters">
+      <div>
+        <div class="meter-lbl">WILL TO LIVE</div>
+        <div class="meter-track"><div class="meter-fill will" id="will-fill" style="width:72%"></div></div>
+        <div class="meter-val" id="will-val">72%</div>
+      </div>
+      <div>
+        <div class="meter-lbl">BANDAGES CONSUMED</div>
+        <div class="meter-track"><div class="meter-fill band" id="band-fill" style="width:30%"></div></div>
+        <div class="meter-val" id="band-val">3 / 10 rolls</div>
+      </div>
+    </div>
+
+    <div class="sec">EVENT LOG</div>
+    <div id="log"></div>
+
+    <div class="dctr">
+      <span>Death attempts logged:</span>
+      <span id="dctr-val">0</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const FLOORS   = 6;
+const SHAFT_H  = 540;
+const FLOOR_H  = SHAFT_H / FLOORS;
+const CAR_H    = 116;
+const MOVE_MS  = 1100;
+const DOOR_MS  = 2400;
+
+let curFloor = 1;
+let state    = 'idle';
+let dir      = null;
+let busy     = false;
+let will     = 72;
+let bandages = 3;
+let deaths   = 0;
+let speechTimer = null;
+
+const photoMap = {
+  idle:    'dazai-idle.png',
+  up:      'dazai-up.png',
+  down:    'dazai-down.png',
+  door:    'dazai-door.png',
+  drama:   'dazai-drama.png',
+  panic:   'dazai-panic.png',
+  escape:  'dazai-escape.png',
+  akechi:  'dazai-akechi.png',
+};
+
+const quotes = {
+  idle: [
+    "The elevator, much like existence, goes nowhere meaningful.",
+    "I pressed G for Ground. Also G for Grief.",
+    "Vertical motion. Still horizontal in spirit.",
+    "The doors close like the ones people shut on me.",
+    "Floor 1. The loneliest number since Ango.",
+    "I wonder if this elevator has ever been truly happy.",
+    "I once got stuck between floors for 40 minutes. Best Tuesday of my life.",
+    "Someone left mochi on the floor. I ate it. No regrets whatsoever.",
+    "The music in here offends my literary sensibilities.",
+    "I have ridden this elevator 14 times today. For research.",
+    "If I press close door fast enough... nothing happens. I tried.",
+  ],
+  up: [
+    "Going up? How optimistic. I give it three floors.",
+    "Rising... like my blood pressure near Ango.",
+    "Ascending. Much like my word count. Pointless.",
+    "Each floor: a metaphor I have not yet survived.",
+    "The cable holds. Today, at least. Unfortunately.",
+  ],
+  down: [
+    "Descending. Finally, something I can relate to.",
+    "Down, down, down. Like my will to attend morning briefings.",
+    "Floor 3... 2... 1... existence continues. Somehow.",
+    "Gravity is the one force that agrees with my worldview.",
+    "Ground floor. Where all things return. Eventually.",
+  ],
+  door: [
+    "The doors open. I do not move. I am a monument to hesitation.",
+    "Please do not hold the door. Let it close. Let everything close.",
+    "Arrived. The destination is always a disappointment.",
+    "*bows dramatically despite being completely alone*",
+    "Floor reached. Composing a 3-part novel about the journey.",
+    "DOORS OPENING. My soul: already open. To suffering.",
+    "I step out. The elevator has seen things it cannot unsee.",
+  ],
+  drama: [
+    "elevator / going nowhere in particular / like my career",
+    "steel box ascends — / Dazai sighs at every floor / the cable holds... regrettably",
+    "floor numbers pass by / each one a year I survived / somehow, inexplicably",
+    "the button glows red / I pressed it once more anyway / no one asked me to",
+    "doors open, close, open / I remain in the middle / neither here nor there",
+  ],
+  panic: [
+    "WHY ARE ALL THE BUTTONS LIT — this is fine. This is completely fine.",
+    "I did not plan this. I planned NONE of this. (I planned all of this.)",
+    "Every floor!! Every single one!! ...okay this is actually fun.",
+    "AAAAAAAA (said with tremendous elegance and poise)",
+    "The elevator visits all floors. I have achieved chaos. Dazai wins.",
+  ],
+  akechi: [
+    "...Akechi. Did you follow me into this elevator specifically.",
+    "Two of us. One box. No exits. Splendid. Truly splendid.",
+    "He's going to critique my report. In a 2×2 meter sealed space.",
+    "We are now trapped together. I have accepted my fate entirely.",
+  ],
+  akechi2: [
+    "Akechi: 'Your floor 3 report had 14 errors.' Dazai: 'I know. They were intentional.'",
+    "Eight minutes. No floors visited. We simply stare at the door.",
+    "He sighs. I sigh. The elevator sighs. No one presses anything.",
+  ],
+  escape: [
+    "I located the ceiling hatch. It is painted shut. Of course it is.",
+    "Attempted ceiling escape. Reconsidered. Too much paperwork afterward.",
+    "The hatch opened. Above it: another elevator. The universe mocks me.",
+    "Almost made it through. My bandages caught on the latch. Typical.",
+    "I reached the roof. There was nothing there. I came back down.",
+  ],
+};
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function setPhoto(key) {
+  const img  = document.getElementById('dazai-photo');
+  const hint = document.getElementById('photo-hint');
+  const src  = photoMap[key] || photoMap.idle;
+  img.src  = src;
+  hint.textContent = src;
+}
+
+function setQuote(text, mood) {
+  const q = document.getElementById('quote-box');
+  q.textContent = '\u201c' + text + '\u201d';
+  q.className   = mood || '';
+}
+
+function speak(text) {
+  const s = document.getElementById('speech');
+  s.textContent = text;
+  s.classList.add('show');
+  clearTimeout(speechTimer);
+  speechTimer = setTimeout(() => s.classList.remove('show'), 3200);
+}
+
+function addLog(msg, type) {
+  const el  = document.getElementById('log');
+  const now = new Date().toTimeString().slice(0, 8);
+  const d   = document.createElement('div');
+  d.className = 'log-e ' + (type || '');
+  d.innerHTML = `<span class="lt">${now}</span><span class="lm">${msg}</span>`;
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
+}
+
+function setWill(delta) {
+  will = Math.max(4, Math.min(98, will + delta));
+  const pct = Math.round(will);
+  document.getElementById('will-fill').style.width = pct + '%';
+  document.getElementById('will-val').textContent  = pct + '%';
+  document.getElementById('will-fill').style.background =
+    will > 60 ? 'var(--up)' : will > 30 ? 'var(--down)' : 'var(--panic)';
+}
+
+function setBandages(n) {
+  bandages = Math.min(10, bandages + n);
+  document.getElementById('hdr-band').textContent  = bandages;
+  document.getElementById('band-fill').style.width = Math.round(bandages / 10 * 100) + '%';
+  document.getElementById('band-val').textContent  = bandages + ' / 10 rolls';
+}
+
+function incDeaths() {
+  deaths++;
+  document.getElementById('hdr-deaths').textContent = deaths;
+  document.getElementById('dctr-val').textContent   = deaths;
+}
+
+function carTop(floor) {
+  return SHAFT_H - floor * FLOOR_H + (FLOOR_H - CAR_H) / 2;
+}
+
+function positionCar(floor, animate) {
+  const car = document.getElementById('car');
+  car.style.transition = animate ? 'top 1s cubic-bezier(.4,0,.2,1)' : 'none';
+  car.style.top = carTop(floor) + 'px';
+  document.getElementById('car-floor').textContent = 'F' + floor + ' · ' + (state || 'IDLE').replace(/_/g,' ').toUpperCase();
+}
+
+function setCarClass(cls) {
+  const car = document.getElementById('car');
+  car.className = cls ? cls : '';
+}
+
+function updateStatus() {
+  document.getElementById('sv-floor').textContent = curFloor;
+  const sd = document.getElementById('sv-state');
+  const stateLabel = { idle:'IDLE', moving_up:'ASCENDING', moving_down:'DESCENDING', door_open:'DOOR OPEN', panicking:'CHAOS', drama:'POETRY', akechi:'TRAPPED', escape:'ESCAPING' };
+  sd.textContent = stateLabel[state] || state.toUpperCase();
+  const stateColor = { idle:'idle', moving_up:'up', moving_down:'down', door_open:'', panicking:'panic', drama:'drama' };
+  sd.className = 'scard-val ' + (stateColor[state] || '');
+
+  const dd = document.getElementById('sv-dir');
+  dd.textContent = dir ? dir.toUpperCase() : '—';
+  dd.className   = 'scard-val ' + (dir === 'up' ? 'up' : dir === 'down' ? 'down' : 'idle');
+}
+
+/* ── FLOOR BUTTONS ── */
+function buildUI() {
+  const shaft = document.getElementById('shaft');
+  for (let f = FLOORS; f >= 1; f--) {
+    const y = SHAFT_H - f * FLOOR_H;
+    const line = document.createElement('div');
+    line.className = 'floor-line';
+    line.style.top = y + 'px';
+    shaft.appendChild(line);
+
+    const lbl = document.createElement('div');
+    lbl.className = 'f-label';
+    lbl.style.top = (y + FLOOR_H / 2 - 6) + 'px';
+    lbl.textContent = 'F' + f;
+    shaft.appendChild(lbl);
+
+    const dot = document.createElement('div');
+    dot.className = 'call-dot';
+    dot.id = 'dot-' + f;
+    dot.style.top = (y + FLOOR_H / 2 - 3.5) + 'px';
+    shaft.appendChild(dot);
+  }
+
+  const grid = document.getElementById('floor-btns');
+  for (let f = FLOORS; f >= 1; f--) {
+    const row = document.createElement('div');
+    row.className = 'frow';
+    row.innerHTML = `
+      <span class="flbl">F${f}</span>
+      <button class="fbtn" id="fb-${f}" onclick="goFloor(${f})">
+        <span>CALL FLOOR ${f}</span>
+        <span class="arrow" id="arr-${f}">→</span>
+      </button>`;
+    grid.appendChild(row);
+  }
+}
+
+function setDot(floor, on) {
+  const d = document.getElementById('dot-' + floor);
+  if (d) d.className = 'call-dot' + (on ? ' lit' : '');
+}
+
+/* ── ELEVATOR LOGIC ── */
+function goFloor(target) {
+  if (busy || state === 'panicking' || state === 'akechi') return;
+  if (target === curFloor) {
+    openDoors('already here', 'idle');
+    return;
+  }
+
+  busy = true;
+  dir  = target > curFloor ? 'up' : 'down';
+  state = dir === 'up' ? 'moving_up' : 'moving_down';
+
+  setCarClass(dir === 'up' ? 'moving-up' : 'moving-down');
+  setPhoto(dir === 'up' ? 'up' : 'down');
+  setQuote(pick(dir === 'up' ? quotes.up : quotes.down), dir === 'down' ? 'drama' : '');
+  speak(dir === 'up' ? 'going up...' : 'going down...');
+  addLog('Moving ' + dir + ' → F' + target, 'move');
+  setDot(target, true);
+  setWill(dir === 'up' ? -3 : +2);
+
+  document.getElementById('fb-' + target).classList.add('active');
+  document.getElementById('arr-' + target).textContent = dir === 'up' ? '↑' : '↓';
+  updateStatus();
+
+  const step = dir === 'up' ? 1 : -1;
+  const steps = Math.abs(target - curFloor);
+  let i = 0;
+
+  function tick() {
+    curFloor += step; i++;
+    positionCar(curFloor, true);
+    updateStatus();
+    if (i < steps) {
+      setTimeout(tick, MOVE_MS);
+    } else {
+      setTimeout(() => {
+        const fb = document.getElementById('fb-' + curFloor);
+        if (fb) { fb.classList.remove('active'); document.getElementById('arr-' + curFloor).textContent = '→'; }
+        setDot(curFloor, false);
+        openDoors(pick(quotes.door), 'idle');
+        addLog('Arrived at F' + curFloor + '. Dazai sighs audibly.', 'info');
+        setWill(-1);
+      }, 300);
+    }
+  }
+  setTimeout(tick, 200);
+}
+
+function openDoors(quoteText, nextState) {
+  state = 'door_open';
+  setCarClass('door-open');
+  setPhoto('door');
+  setQuote(quoteText, '');
+  speak('...arrived.');
+  updateStatus();
+
+  setTimeout(() => {
+    const car = document.getElementById('car');
+    car.classList.remove('door-open');
+    car.classList.add('door-closing');
+    setTimeout(() => {
+      car.classList.remove('door-closing');
+      state = nextState || 'idle'; dir = null; busy = false;
+      setCarClass('');
+      setPhoto('idle');
+      setQuote(pick(quotes.idle), '');
+      updateStatus();
+      positionCar(curFloor, false);
+    }, 600);
+  }, DOOR_MS);
+}
+
+/* ── SPECIAL ACTIONS ── */
+function triggerDrama() {
+  if (busy) return;
+  state = 'drama';
+  setCarClass('drama');
+  setPhoto('drama');
+  const haiku = pick(quotes.drama);
+  setQuote(haiku, 'drama');
+  speak('*haiku mode activated*');
+  addLog('Dazai composed a haiku. Bandage count increased mysteriously.', 'drama');
+  setWill(+6);
+  setBandages(1);
+  setTimeout(() => {
+    setCarClass('');
+    setPhoto('idle');
+    state = 'idle';
+    setQuote(pick(quotes.idle), '');
+    updateStatus();
+  }, 4000);
+  updateStatus();
+}
+
+function triggerPanic() {
+  if (state === 'panicking') return;
+  busy = true; state = 'panicking';
+  setCarClass('panicking');
+  setPhoto('panic');
+  setQuote(pick(quotes.panic), 'panic');
+  speak('EVERY FLOOR');
+  addLog('All buttons pressed simultaneously. Chaos achieved.', 'panic');
+  setWill(-15);
+  setBandages(3);
+  incDeaths();
+  addLog('Death attempt #' + deaths + ' logged (elevator-themed).', 'panic');
+
+  document.querySelectorAll('.fbtn').forEach(b => { b.classList.add('active'); });
+  let f = 1; let upward = true;
+  const tour = setInterval(() => {
+    curFloor = f;
+    positionCar(curFloor, true);
+    updateStatus();
+    if (upward) { f++; if (f > FLOORS) { upward = false; f = FLOORS - 1; } }
+    else        { f--; if (f < 1)      { upward = true;  f = 2; } }
+  }, 700);
+
+  setTimeout(() => {
+    clearInterval(tour);
+    curFloor = 1; positionCar(1, true);
+    document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+    state = 'idle'; setCarClass(''); busy = false; dir = null;
+    setPhoto('idle');
+    setQuote("That was... cathartic. Do not tell Ango. Or Akechi. Especially Akechi.", '');
+    speak('...cathartic.');
+    addLog('Panic subsided. Dazai adjusts his bandages.', 'info');
+    updateStatus();
+  }, 6000);
+}
+
+function tryEscape() {
+  if (busy) return;
+  state = 'escape';
+  setCarClass('drama');
+  setPhoto('escape');
+  setQuote(pick(quotes.escape), 'drama');
+  speak('almost...');
+  addLog('Escape via ceiling hatch attempted.', 'lol');
+  addLog('Hatch painted shut. Two bandage rolls lost to the latch.', 'lol');
+  setWill(-2);
+  setBandages(2);
+  incDeaths();
+  setTimeout(() => {
+    state = 'idle';
+    setCarClass('');
+    setPhoto('idle');
+    setQuote(pick(quotes.idle), '');
+    updateStatus();
+  }, 3500);
+  updateStatus();
+}
+
+function akechiEnters() {
+  if (busy) return;
+  busy = true; state = 'akechi';
+  setCarClass('drama');
+  setPhoto('akechi');
+  setQuote(pick(quotes.akechi), 'panic');
+  speak('...Akechi.');
+  addLog('Akechi has entered elevator B-4.', 'drama');
+  addLog('Tension: maximum. Space: 2m². Words: zero.', 'drama');
+  setWill(-10);
+  setBandages(1);
+  addLog('One bandage roll applied preemptively.', 'lol');
+  updateStatus();
+
+  setTimeout(() => {
+    setQuote(pick(quotes.akechi2), 'panic');
+    addLog('Argument commenced in enclosed space. No floor selected.', 'drama');
+  }, 3500);
+
+  setTimeout(() => {
+    setQuote("The elevator has visited no floor. Both men stare at the door. The door is unmoved by this.", '');
+    addLog('Impasse: 8 minutes. Dazai wins by surviving the silence.', 'lol');
+    setWill(+4);
+    setTimeout(() => {
+      state = 'idle'; setCarClass(''); busy = false;
+      setPhoto('idle');
+      setQuote(pick(quotes.idle), '');
+      addLog('Akechi has exited. Dazai exhales for the first time.', 'info');
+      updateStatus();
+    }, 3000);
+  }, 7000);
+}
+
+function resetAll() {
+  busy = false; state = 'idle'; dir = null;
+  curFloor = 1;
+  positionCar(1, false);
+  setCarClass('');
+  setPhoto('idle');
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.call-dot').forEach(d => d.className = 'call-dot');
+  setQuote('System reset. Dazai eyes the ceiling hatch again.', '');
+  speak('...reset.');
+  addLog('System reset. All clear. Dazai still here.', 'info');
+  updateStatus();
+}
+
+/* ── IDLE MUTTERINGS ── */
+setInterval(() => {
+  if (state === 'idle' && !busy && Math.random() < 0.2) {
+    setQuote(pick(quotes.idle), '');
+    setWill(Math.random() < 0.5 ? -1 : +1);
+  }
+}, 8000);
+
+/* ── INIT ── */
+buildUI();
+positionCar(1, false);
+setPhoto('idle');
+updateStatus();
+addLog('Elevator B-4 online. Dazai Osamu: present.', 'info');
+addLog('He pressed every button once. Then unpressed them.', 'lol');
+addLog('SCAN algorithm active. God help us.', 'drama');
+</script>
+</body>
+</html>
