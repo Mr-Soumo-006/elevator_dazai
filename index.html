@@ -431,74 +431,74 @@ const photoMap = {
 
 const quotes = {
   idle: [
-    "The elevator, much like existence, goes nowhere meaningful.",
-    "I pressed G for Ground. Also G for Grief.",
-    "Vertical motion. Still horizontal in spirit.",
-    "The doors close like the ones people shut on me.",
-    "Floor 1. The loneliest number since Ango.",
-    "I wonder if this elevator has ever been truly happy.",
-    "I once got stuck between floors for 40 minutes. Best Tuesday of my life.",
+    "A beautiful double suicide... in an elevator? No, too cramped. The aesthetics would be terrible.",
+    "I wonder if Kunikida is looking for me. I left a note saying I was ascending to a higher plane of existence. Technically true.",
+    "If I stay in here long enough, does that count as working? Fukuzawa-san would probably say no.",
+    "This elevator is surprisingly sturdy. A shame, really.",
+    "At least Chuuya isn't here. His lack of height would make this elevator look like a cathedral.",
+    "Ah, the elevator music... it lacks the melancholic passion of a good tragedy.",
+    "I should write a book: '101 Ways to Doze Off in an ADA Elevator'.",
+    "I pressed G. G for Ground, G for Grief, or G for 'Genius detective hiding from paperwork'.",
+    "Sometimes, vertical movement is the only progress I make all day.",
     "Someone left mochi on the floor. I ate it. No regrets whatsoever.",
-    "The music in here offends my literary sensibilities.",
-    "I have ridden this elevator 14 times today. For research.",
-    "If I press close door fast enough... nothing happens. I tried.",
+    "If I press the close door button fast enough... nothing happens. I tried."
   ],
   up: [
     "Going up? How optimistic. I give it three floors.",
-    "Rising... like my blood pressure near Ango.",
+    "Rising... like my blood pressure near Kunikida.",
     "Ascending. Much like my word count. Pointless.",
-    "Each floor: a metaphor I have not yet survived.",
-    "The cable holds. Today, at least. Unfortunately.",
+    "Each floor brings me closer to Kunikida's angry yelling. Let's press the emergency stop.",
+    "We are defying gravity! Newton would be so disappointed in us."
   ],
   down: [
-    "Descending. Finally, something I can relate to.",
-    "Down, down, down. Like my will to attend morning briefings.",
-    "Floor 3... 2... 1... existence continues. Somehow.",
-    "Gravity is the one force that agrees with my worldview.",
-    "Ground floor. Where all things return. Eventually.",
+    "Descending... Ah, the sweet pull of gravity. My only true friend.",
+    "Going down to the basement. I hope there are no reports down there.",
+    "Down we go, returning to the earth. If only it were a bit faster...",
+    "Down, down, down. Much like my motivation to do anything today.",
+    "The floor numbers are counting down. Ten, nine... wait, we only have six floors."
   ],
   door: [
     "The doors open. I do not move. I am a monument to hesitation.",
     "Please do not hold the door. Let it close. Let everything close.",
     "Arrived. The destination is always a disappointment.",
     "*bows dramatically despite being completely alone*",
-    "Floor reached. Composing a 3-part novel about the journey.",
+    "Floor reached. Composing a dramatic three-volume novel about the journey in my head.",
     "DOORS OPENING. My soul: already open. To suffering.",
-    "I step out. The elevator has seen things it cannot unsee.",
-  ],
-  drama: [
-    "elevator / going nowhere in particular / like my career",
-    "steel box ascends — / Dazai sighs at every floor / the cable holds... regrettably",
-    "floor numbers pass by / each one a year I survived / somehow, inexplicably",
-    "the button glows red / I pressed it once more anyway / no one asked me to",
-    "doors open, close, open / I remain in the middle / neither here nor there",
+    "Doors opening... Quick, act like I wasn't just napping against the wall."
   ],
   panic: [
-    "WHY ARE ALL THE BUTTONS LIT — this is fine. This is completely fine.",
-    "I did not plan this. I planned NONE of this. (I planned all of this.)",
-    "Every floor!! Every single one!! ...okay this is actually fun.",
-    "AAAAAAAA (said with tremendous elegance and poise)",
-    "The elevator visits all floors. I have achieved chaos. Dazai wins.",
+    "CHAOS! This is the peak of human achievement!",
+    "Kunikida is going to write a 40-page essay on why I shouldn't do this!",
+    "Every light is on! It's like a Christmas tree, but with more impending doom!",
+    "We are visiting every single floor! I call this... efficiency!",
+    "Wheee! Look at the floor indicator go! This is the most fun I've had all week!"
   ],
   akechi: [
     "...Akechi. Did you follow me into this elevator specifically.",
     "Two of us. One box. No exits. Splendid. Truly splendid.",
     "He's going to critique my report. In a 2×2 meter sealed space.",
-    "We are now trapped together. I have accepted my fate entirely.",
+    "We are now trapped together. I have accepted my fate entirely."
   ],
   akechi2: [
-    "Akechi: 'Your floor 3 report had 14 errors.' Dazai: 'I know. They were intentional.'",
+    "Akechi: 'Your report had 14 errors.' Dazai: 'I know. They were artistic choices.'",
     "Eight minutes. No floors visited. We simply stare at the door.",
-    "He sighs. I sigh. The elevator sighs. No one presses anything.",
+    "He sighs. I sigh. The elevator sighs. No one presses anything."
   ],
   escape: [
     "I located the ceiling hatch. It is painted shut. Of course it is.",
     "Attempted ceiling escape. Reconsidered. Too much paperwork afterward.",
     "The hatch opened. Above it: another elevator. The universe mocks me.",
-    "Almost made it through. My bandages caught on the latch. Typical.",
-    "I reached the roof. There was nothing there. I came back down.",
-  ],
+    "Almost made it through. My bandages caught on the latch. Typical."
+  ]
 };
+
+const haikus = [
+  ["steel box rises high", "Dazai sighs at every floor", "paperwork awaits"],
+  ["the cable is thin", "yet it holds my weary soul", "how disappointing"],
+  ["buttons glowing bright", "I pressed them all for the thrill", "Kunikida screams"],
+  ["elevator walls", "two meters of solitude", "where is my sake?"],
+  ["doors open and close", "an endless cycle of hope", "then back to floor one"]
+];
 
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
@@ -506,8 +506,13 @@ function setPhoto(key) {
   const img  = document.getElementById('dazai-photo');
   const hint = document.getElementById('photo-hint');
   const src  = photoMap[key] || photoMap.idle;
-  img.src  = src;
-  hint.textContent = src;
+  
+  img.style.opacity = 0;
+  setTimeout(() => {
+    img.src = src;
+    hint.textContent = src;
+    img.style.opacity = 1;
+  }, 120);
 }
 
 function setQuote(text, mood) {
@@ -702,23 +707,39 @@ function openDoors(quoteText, nextState) {
 /* ── SPECIAL ACTIONS ── */
 function triggerDrama() {
   if (busy) return;
-  state = 'drama';
+  busy = true; state = 'drama';
   setCarClass('drama');
   setPhoto('drama');
-  const haiku = pick(quotes.drama);
-  setQuote(haiku, 'drama');
-  speak('*haiku mode activated*');
-  addLog('Dazai composed a haiku. Bandage count increased mysteriously.', 'drama');
+  updateStatus();
+  
+  const haiku = pick(haikus);
+  setQuote("Dazai closes his eyes, composing a masterpiece...", 'drama');
+  speak("*inhales deeply*");
+  addLog("Dazai composed a haiku. Bandage count increased mysteriously.", 'drama');
   setWill(+6);
   setBandages(1);
+
   setTimeout(() => {
-    setCarClass('');
+    speak(haiku[0]);
+    setQuote(haiku[0] + "...", 'drama');
+  }, 1200);
+
+  setTimeout(() => {
+    speak(haiku[1]);
+    setQuote(haiku[0] + " / " + haiku[1] + "...", 'drama');
+  }, 3000);
+
+  setTimeout(() => {
+    speak(haiku[2]);
+    setQuote(haiku[0] + " / " + haiku[1] + " / " + haiku[2], 'drama');
+  }, 4800);
+
+  setTimeout(() => {
+    state = 'idle'; setCarClass(''); busy = false;
     setPhoto('idle');
-    state = 'idle';
     setQuote(pick(quotes.idle), '');
     updateStatus();
-  }, 4000);
-  updateStatus();
+  }, 7000);
 }
 
 function triggerPanic() {
@@ -726,8 +747,10 @@ function triggerPanic() {
   busy = true; state = 'panicking';
   setCarClass('panicking');
   setPhoto('panic');
-  setQuote(pick(quotes.panic), 'panic');
-  speak('EVERY FLOOR');
+  updateStatus();
+  
+  setQuote("EVERY BUTTON PRESSED. ACCESSING ALL SECTORS.", 'panic');
+  speak("CHAOS MODE ACTIVATED!");
   addLog('All buttons pressed simultaneously. Chaos achieved.', 'panic');
   setWill(-15);
   setBandages(3);
@@ -736,13 +759,29 @@ function triggerPanic() {
 
   document.querySelectorAll('.fbtn').forEach(b => { b.classList.add('active'); });
   let f = 1; let upward = true;
+  
+  const panicCommentary = [
+    "Wheee! Floor indicator is going wild!",
+    "I can feel the G-force! Splendid!",
+    "Kunikida's blood pressure is rising!",
+    "We are visiting every level of suffering!",
+    "Are we going up? Are we going down? Who cares!",
+    "Emergency brake, where are you?",
+    "If the cable snaps, I won't have to do reports!"
+  ];
+
   const tour = setInterval(() => {
     curFloor = f;
     positionCar(curFloor, true);
     updateStatus();
+    
+    const line = pick(panicCommentary);
+    speak(line);
+    setQuote("F" + curFloor + ": " + line, 'panic');
+    
     if (upward) { f++; if (f > FLOORS) { upward = false; f = FLOORS - 1; } }
     else        { f--; if (f < 1)      { upward = true;  f = 2; } }
-  }, 700);
+  }, 850);
 
   setTimeout(() => {
     clearInterval(tour);
@@ -754,29 +793,40 @@ function triggerPanic() {
     speak('...cathartic.');
     addLog('Panic subsided. Dazai adjusts his bandages.', 'info');
     updateStatus();
-  }, 6000);
+  }, 7000);
 }
 
 function tryEscape() {
   if (busy) return;
-  state = 'escape';
+  busy = true; state = 'escape';
   setCarClass('drama');
   setPhoto('escape');
-  setQuote(pick(quotes.escape), 'drama');
-  speak('almost...');
-  addLog('Escape via ceiling hatch attempted.', 'lol');
-  addLog('Hatch painted shut. Two bandage rolls lost to the latch.', 'lol');
-  setWill(-2);
-  setBandages(2);
-  incDeaths();
-  setTimeout(() => {
-    state = 'idle';
-    setCarClass('');
-    setPhoto('idle');
-    setQuote(pick(quotes.idle), '');
-    updateStatus();
-  }, 3500);
   updateStatus();
+  
+  setQuote("Dazai eyes the ceiling hatch. A daring bid for freedom begins...", 'drama');
+  speak("Freedom awaits!");
+  addLog('Escape via ceiling hatch attempted.', 'lol');
+
+  setTimeout(() => {
+    speak("Reaching up... almost there...");
+    setQuote("He climbs onto the handrails, stretching his arms towards the latch...", 'drama');
+  }, 1500);
+
+  setTimeout(() => {
+    speak("Ow! Bandages caught!");
+    setQuote("Disaster! His bandages get severely tangled in the rusted lock mechanism.", 'drama');
+    addLog('Hatch painted shut. Two bandage rolls lost to the latch.', 'lol');
+    setWill(-2);
+    setBandages(2);
+    incDeaths();
+  }, 3500);
+
+  setTimeout(() => {
+    state = 'idle'; setCarClass(''); busy = false;
+    setPhoto('idle');
+    setQuote("Back to reality. That hatch was a trap.", '');
+    updateStatus();
+  }, 6000);
 }
 
 function akechiEnters() {
@@ -784,32 +834,40 @@ function akechiEnters() {
   busy = true; state = 'akechi';
   setCarClass('drama');
   setPhoto('akechi');
-  setQuote(pick(quotes.akechi), 'panic');
-  speak('...Akechi.');
+  updateStatus();
+  
+  setQuote("Akechi steps into the elevator. The air freezes. Tension: maximum.", 'panic');
+  speak("...Akechi.");
   addLog('Akechi has entered elevator B-4.', 'drama');
   addLog('Tension: maximum. Space: 2m². Words: zero.', 'drama');
   setWill(-10);
   setBandages(1);
-  addLog('One bandage roll applied preemptively.', 'lol');
-  updateStatus();
 
   setTimeout(() => {
-    setQuote(pick(quotes.akechi2), 'panic');
-    addLog('Argument commenced in enclosed space. No floor selected.', 'drama');
-  }, 3500);
+    speak("Akechi: 'Your report had 14 errors.'");
+    setQuote("Akechi: 'Your floor 3 report had 14 errors.' \nDazai: 'I know. They were artistic choices.'", 'panic');
+    addLog("Argument commenced in enclosed space.", 'drama');
+  }, 2500);
 
   setTimeout(() => {
-    setQuote("The elevator has visited no floor. Both men stare at the door. The door is unmoved by this.", '');
+    speak("Dazai: 'Is firing me an option?'");
+    setQuote("Akechi: 'Are you trying to get fired?' \nDazai: 'Is that an option? Please tell me it is!'", 'panic');
+  }, 5000);
+
+  setTimeout(() => {
+    speak("...");
+    setQuote("The elevator has visited no floor. Both men stare at the door. The door is unmoved by this.", 'panic');
     addLog('Impasse: 8 minutes. Dazai wins by surviving the silence.', 'lol');
     setWill(+4);
-    setTimeout(() => {
-      state = 'idle'; setCarClass(''); busy = false;
-      setPhoto('idle');
-      setQuote(pick(quotes.idle), '');
-      addLog('Akechi has exited. Dazai exhales for the first time.', 'info');
-      updateStatus();
-    }, 3000);
-  }, 7000);
+  }, 7500);
+
+  setTimeout(() => {
+    state = 'idle'; setCarClass(''); busy = false;
+    setPhoto('idle');
+    setQuote("Akechi has left. I can breathe again.", '');
+    addLog('Akechi has exited. Dazai exhales for the first time.', 'info');
+    updateStatus();
+  }, 10500);
 }
 
 function resetAll() {
